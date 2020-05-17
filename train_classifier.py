@@ -34,7 +34,8 @@ def load_data(database_filepath):
 
     X = df['message'] # feature to predict
     y = df.drop(['message', 'genre', 'id', 'original'], axis = 1) # select 35 categories, where message is predicted
-    return X,y
+    category_names = y.columns
+    return X,y,category_names 
 
 # regular expression to detect a url is given below
 url_regex = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
@@ -90,7 +91,7 @@ def build_model():
 def evaluate_model(model, X_test, Y_test, category_names):
     #testing predictions
     y_pred = cv.predict(X_test)
-    print(classification_report(Y_test, y_pred, target_names=y.columns.values)
+    print(classification_report(Y_test, y_pred, target_names=category_names))
 
           
          
