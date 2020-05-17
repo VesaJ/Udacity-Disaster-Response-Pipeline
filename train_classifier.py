@@ -92,17 +92,13 @@ def evaluate_model(model, X_test, Y_test, category_names):
     y_pred = cv.predict(X_test)
     print(classification_report(Y_test, y_pred, target_names=y.columns.values)
 
-
-
-def save_model(model, model_filepath):
           
          
 def save_model(model, model_filepath):
     pickle.dump(model, open(model_filepath, 'wb'))
     
         
-    
-      
+   
 
 
 def main():
