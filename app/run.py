@@ -1,3 +1,4 @@
+# import libraries 
 import json
 import plotly
 import pandas as pd
@@ -91,7 +92,27 @@ def index():
                     'tickangle': 35
                 }
             }
-        }
+        },
+        
+        # GRAPH 3 - Top Ten 
+        {
+            'data': [
+                Bar(
+                    x=categories_names,
+                    y=categories_mean
+                )
+            ],
+
+            'layout': {
+                'title': 'Top 10 Message Categories',
+                'yaxis': {
+                    'title': "Percentage"
+                },
+                'xaxis': {
+                    'title': "Categories"
+                }
+            }
+        }    
     ]
     
    
