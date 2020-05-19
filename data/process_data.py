@@ -1,18 +1,19 @@
+# import libraries
 import sys
 
 import pandas as pd
 from sqlalchemy import create_engine
 import sqlite3
 
+# load data
 def load_data(messages_filepath, categories_filepath):
     messages = pd.read_csv('data/messages.csv')
     categories = pd.read_csv('data/categories.csv')
     df = messages.merge(categories, on='id')
     return df
 
-
+    # clean data
 def clean_data(df):
-    
     categories = df["categories"].str.split(";", expand=True)
     row = categories.iloc[0]
     category_colnames = row.transform(lambda x: x[:-2]).tolist()
@@ -36,18 +37,14 @@ def clean_data(df):
     
 
     return df
-#engine = create_engine('sqlite:///{}'.format(database_filepath))
 
+    # save dataframe to database in 'DisasterResponse' table
 def save_data(df, database_filename):
-    '''
-    Save dataframe to database in 'messages' table
-    '''
-
     conn = sqlite3.connect('DisasterResponse.db')
     df.to_sql('messages', con=conn, if_exists='replace', index=False)
     engine = 'data/DisasterResponse.db.backends.sqlite3'
     name = 'data/DisasterResponse/data.sqlite3'
-    pass  
+    
     
 
 def main():
