@@ -1,3 +1,4 @@
+# Import libraries
 import sys
 
 import pandas as pd
@@ -11,7 +12,6 @@ from sqlalchemy import create_engine
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
-#from sklearn.model_selection import RandomizedSearchCV
 
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
@@ -22,36 +22,34 @@ from sklearn.model_selection import GridSearchCV
 
 import pickle
 
-
-def load_data(database_filepath):
     # load data from database
+def load_data(database_filepath):
     engine = create_engine('sqlite:///DisasterResponse.db')
     df = pd.read_sql_table("DisasterResponse", con=engine)
 
-    # some cleaning issues
-    df = df[df.related != 2] # related column had three category values, exluded value 2(with   n=188)
-    df = df.drop(['child_alone'],axis=1) # child alone column had only zeros,dropped out 
-
-    X = df['message'] # feature to predict
-    y = df.drop(['message', 'genre', 'id', 'original'], axis = 1) # select 35 categories, where message is predicted
+    # some cleaning issue:
+    # related column had three category values, exluded value 2(n=188)
+    df = df[df.related != 2] 
+    # feature to predict
+    X = df['message'] 
+    # select 36 categories, where message is predicted 
+    y = df.drop(['message', 'genre', 'id', 'original'], axis = 1) 
     category_names = y.columns
     return X,y,category_names 
 
 # regular expression to detect a url is given below
 url_regex = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
 
-'''
-    Tokenize function
-  
-'''
+
     
+    # tokenize function
 def tokenize(text,url_place_holder_string="urlplaceholder"):
     
     
    # get list of all urls using regex
     detected_urls = re.findall(url_regex, text)
     
-    # rreplace each url in text string with placeholder
+    # replace each url in text string with placeholder
     for detected_url in detected_urls:
         text = text.replace(detected_url, url_place_holder_string)
 
@@ -70,7 +68,7 @@ def tokenize(text,url_place_holder_string="urlplaceholder"):
     return clean_tokens
     
 
-
+     # build a pipeline funtion
 def build_model():
     pipeline = Pipeline([
         ('vect', CountVectorizer(tokenizer=tokenize)),
@@ -87,14 +85,14 @@ def build_model():
    
     return cv
 
-
+    # evaluate a model
 def evaluate_model(model, X_test, Y_test, category_names):
     #testing predictions
     y_pred = model.predict(X_test)
     print(classification_report(Y_test, y_pred, target_names=category_names))
 
           
-         
+    # save the model     
 def save_model(model, model_filepath):
     pickle.dump(model, open(model_filepath, 'wb'))
     
